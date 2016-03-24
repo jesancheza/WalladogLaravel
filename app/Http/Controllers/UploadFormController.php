@@ -1,16 +1,18 @@
 <?php
 
-namespace Walladog\Http\Controllers\Api;
+namespace Walladog\Http\Controllers;
 
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
-use Mockery\CountValidator\Exception;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Walladog\Http\Controllers\Controller;
-use Walladog\Http\Requests;
-use Walladog\Pet;
 
-class PetsController extends Controller
+use Walladog\Http\Requests;
+
+use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Session;
+
+
+class UploadFormController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -19,7 +21,8 @@ class PetsController extends Controller
      */
     public function index()
     {
-        return response()->json(Pet::with('location','user')->paginate(15));
+        
+        return view('upload.index');
     }
 
     /**
@@ -51,7 +54,7 @@ class PetsController extends Controller
      */
     public function show($id)
     {
-        return response()->json(Pet::with('location','images','partner')->findOrFail($id)); //Get the resource);
+        //
     }
 
     /**

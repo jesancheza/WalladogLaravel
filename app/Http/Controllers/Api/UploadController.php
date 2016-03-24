@@ -2,15 +2,14 @@
 
 namespace Walladog\Http\Controllers\Api;
 
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
-use Mockery\CountValidator\Exception;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
+use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Validator;
 use Walladog\Http\Controllers\Controller;
 use Walladog\Http\Requests;
-use Walladog\Pet;
 
-class PetsController extends Controller
+class UploadController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -19,7 +18,7 @@ class PetsController extends Controller
      */
     public function index()
     {
-        return response()->json(Pet::with('location','user')->paginate(15));
+        //
     }
 
     /**
@@ -40,7 +39,16 @@ class PetsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $image = Input::file('image');
+        /*$validator = Validator::make([$image], ['image' => 'required']);
+        if ($validator->fails()) {
+            return $this->errors(['message' => 'Not an image.', 'code' => 400]);
+        }*/
+        $destinationPath = storage_path() . '/uploads';
+        if(!$image->move($destinationPath, $image->getClientOriginalName())) {
+            return $this->errors(['message' => 'Error saving the file.', 'code' => 400]);
+        }
+        return response()->json(['success' => true], 200);
     }
 
     /**
@@ -51,7 +59,7 @@ class PetsController extends Controller
      */
     public function show($id)
     {
-        return response()->json(Pet::with('location','images','partner')->findOrFail($id)); //Get the resource);
+        //
     }
 
     /**
