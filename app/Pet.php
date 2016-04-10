@@ -3,7 +3,6 @@
 namespace Walladog;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Foundation\Auth\User;
 
 
 class Pet extends Model

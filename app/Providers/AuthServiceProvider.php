@@ -4,6 +4,8 @@ namespace Walladog\Providers;
 
 use Illuminate\Contracts\Auth\Access\Gate as GateContract;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Walladog\Pet;
+use Walladog\Policies\PetsPolicy;
 use Walladog\Policies\UserPolicy;
 use Walladog\User;
 
@@ -17,6 +19,7 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         'Walladog\Model' => 'Walladog\Policies\ModelPolicy',
         User::class => UserPolicy::class,
+        Pet::class => PetsPolicy::class,
     ];
 
     /**

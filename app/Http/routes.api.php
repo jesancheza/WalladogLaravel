@@ -49,6 +49,18 @@ Route::group(['middleware' => ['oauth'],'prefix'=>'api/1.0'], function () {
         'as'    => 'users_index_path'
     ]);
 
+    /**
+     * Pets oauth
+     */
+    Route::delete('pets/{id}', [
+        'uses'  => 'PetsController@destroy',
+        'as'    => 'pets_delete_path'
+    ])->where('id','[0-9]+');
+
+    Route::post('pets', [
+        'uses'  => 'PetsController@create',
+        'as'    => 'pets_create_path'
+    ]);
 });
 
 
@@ -74,7 +86,7 @@ Route::group(['prefix'=>'api/1.0'], function () {
      */
     Route::get('pets/{id}', [
         'uses'  => 'PetsController@show',
-        'as'    => 'pets_show_path'
+        'as'    => 'c'
     ])->where('id','[0-9]+');
 
     Route::get('pets', [
