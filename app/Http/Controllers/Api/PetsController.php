@@ -34,16 +34,18 @@ class PetsController extends Controller
     {
         Auth::loginUsingId(Authorizer::getResourceOwnerId());
 
-        $validator = Validator::make($request->only(['pet_name','id_pet_race','user_id','partner_id','pet_cross_description','pet_description','birthdate','sterile']), [
+        $validator = Validator::make($request->only(['pet_name','id_pet_race','id_pet_type'/*,'user_id','partner_id'*/,'pet_cross_description','pet_description','birthdate','sterile','hidden_location','hidden_location_city']), [
             'pet_name' => 'string|max:100|required',
             'id_pet_race' =>  'exists:pet_races,id|required',
             'id_pet_type' => 'exists:pet_types,id|required',
-            'user_id' => 'exists:users,id',
-            'partner_id' => 'exists:partners,id',
+            /*'user_id' => 'exists:users,id',
+            'partner_id' => 'exists:partners,id',*/
             'pet_cross_description' => 'string|max:255',
             'pet_description' => 'string|max:255',
-            'sterile' => '',
-            'birthdate' => 'date_format:Y/m/d'
+            'sterile' => 'boolean',
+            'birthdate' => 'date_format:Y/m/d',
+            'hidden_location' => 'boolean',
+            'hidden_location_city' => 'string'
 
         ]);
         if ($validator->fails()) {
@@ -58,12 +60,14 @@ class PetsController extends Controller
         $pet->pet_name = $request->get('pet_name');
         $pet->id_pet_race = $request->get('id_pet_race');
         $pet->id_pet_type = $request->get('id_pet_type');
-        $pet->user_id = $request->get('user_id');
-        $pet->partner_id = $request->get('partner_id');
+        $pet->user_id = Auth::id();
+        $pet->partner_id = Auth::id();
         $pet->pet_cross_description = $request->get('pet_cross_description');
         $pet->pet_description = $request->get('pet_description');
         $pet->sterile = $request->get('sterile');
         $pet->birthdate = $request->get('birthdate');
+        $pet->hidden_location = $request->get('hidden_location');
+        $pet->hidden_location_city = $request->get('hidden_location_city') !== null ? $request->get('hidden_location_city') : "Sin ubicación";
         $pet->rating = 0;
         $pet->visits = 0;
         $pet->deleted = 0;
