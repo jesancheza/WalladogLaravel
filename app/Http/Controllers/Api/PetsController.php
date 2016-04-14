@@ -11,6 +11,7 @@ use LucaDegasperi\OAuth2Server\Facades\Authorizer;
 use Walladog\Http\Controllers\Controller;
 use Walladog\Http\Requests;
 use Walladog\Pet;
+use Walladog\User;
 
 class PetsController extends Controller
 {
@@ -34,7 +35,7 @@ class PetsController extends Controller
     {
         Auth::loginUsingId(Authorizer::getResourceOwnerId());
 
-        $validator = Validator::make($request->only(['pet_name','id_pet_race','id_pet_type'/*,'user_id','partner_id'*/,'pet_cross_description','pet_description','birthdate','sterile','hidden_location','hidden_location_city']), [
+        $validator = Validator::make($request->only(['pet_name','id_pet_race','id_pet_type'/*,'user_id','partner_id'*/,'pet_cross_description','pet_description','birthdate','sterile','hidden_location','hidden_location_city','is_partner']), [
             'pet_name' => 'string|max:100|required',
             'id_pet_race' =>  'exists:pet_races,id|required',
             'id_pet_type' => 'exists:pet_types,id|required',
@@ -45,7 +46,8 @@ class PetsController extends Controller
             'sterile' => 'boolean',
             'birthdate' => 'date_format:Y/m/d',
             'hidden_location' => 'boolean',
-            'hidden_location_city' => 'string'
+            'hidden_location_city' => 'string',
+            'is_partner' => 'boolean'
 
         ]);
         if ($validator->fails()) {
@@ -61,7 +63,12 @@ class PetsController extends Controller
         $pet->id_pet_race = $request->get('id_pet_race');
         $pet->id_pet_type = $request->get('id_pet_type');
         $pet->user_id = Auth::id();
-        $pet->partner_id = Auth::id();
+        if ($request->get('is_partner') !== null && $request->get('is_partner')){
+            $user = User::with('partner')->findOrFail(Auth::id());
+            if ($user->partner_id != 0){
+                $pet->partner_id = $user->partner_id;
+            }
+        }
         $pet->pet_cross_description = $request->get('pet_cross_description');
         $pet->pet_description = $request->get('pet_description');
         $pet->sterile = $request->get('sterile');
