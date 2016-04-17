@@ -4,6 +4,11 @@ namespace Walladog\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Validator;
+use LucaDegasperi\OAuth2Server\Facades\Authorizer;
 use Walladog\Http\Controllers\Controller;
 use Walladog\Http\Requests;
 use Walladog\Site;
@@ -17,7 +22,7 @@ class SitesController extends Controller
      */
     public function index()
     {
-        return response()->json(Site::with('user','category','type','comments')->paginate(15));
+        return response()->json(Site::with('user','category','type','comments')->where('deleted', 0)->paginate(15));
     }
 
     /**
@@ -25,9 +30,38 @@ class SitesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        Auth::loginUsingId(Authorizer::getResourceOwnerId());
+
+        $validator = Validator::make($request->only(['site_category_id','site_type_id','pet_type_id','name','description']), [
+            'site_category_id' => 'exists:site_categories,id|required',
+            'site_type_id' =>  'exists:site_types,id|required',
+            'pet_type_id' => 'exists:pet_types,id|required',
+            'name' => 'string|max:255|required',
+            'description' => 'string'
+
+        ]);
+        if ($validator->fails()) {
+            return Response::make([
+                'message'   => 'Validation Failed',
+                'errors'        => $validator->errors()
+            ]);
+        }
+
+        $site = new Site();
+
+        $site->name = $request->get('name');
+        $site->description = $request->get('description');
+        $site->site_category_id = $request->get('site_category_id');
+        $site->site_type_id = $request->get('site_type_id');
+        $site->pet_type_id = $request->get('pet_type_id');
+        $site->user_id = Auth::id();
+        $site->deleted = 0;
+
+        $site->save();
+
+        return response()->json($site);
     }
 
     /**
@@ -49,7 +83,13 @@ class SitesController extends Controller
      */
     public function show($id)
     {
-        //
+        $site = Site::with('user','category','type','comments')->findOrFail($id);
+
+        if($site->deleted == 1){
+            return response()->json([ 'error' => 'Site don\'t exit'], 401);
+        }
+
+        return response()->json($site); //Get the resource
     }
 
     /**
@@ -83,6 +123,17 @@ class SitesController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Auth::loginUsingId(Authorizer::getResourceOwnerId());
+
+        $site = Site::with('user')->findOrFail($id); //Get the resource
+
+        if(Gate::denies('destroy',$site)) {
+            return response()->json([ 'error' => 'Usuario no autorizado' ], 401);
+        }
+
+        $site->deleted = 1;
+        $site->save();
+
+        return response()->json($site);
     }
 }

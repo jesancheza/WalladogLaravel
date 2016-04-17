@@ -61,6 +61,33 @@ Route::group(['middleware' => ['oauth'],'prefix'=>'api/1.0'], function () {
         'uses'  => 'PetsController@create',
         'as'    => 'pets_create_path'
     ]);
+
+    /**
+     * Publications
+     */
+    Route::post('publications', [
+        'uses'  => 'PublicationsController@create',
+        'as'    => 'publications_create_path'
+    ]);
+
+    Route::delete('publications/{id}', [
+        'uses'  => 'PublicationsController@destroy',
+        'as'    => 'publications_delete_path'
+    ])->where('id','[0-9]+');
+
+    /**
+     * Sites
+     */
+    Route::post('sites', [
+        'uses'  => 'SitesController@create',
+        'as'    => 'sites_create_path'
+    ]);
+
+    Route::delete('sites/{id}', [
+        'uses'  => 'SitesController@destroy',
+        'as'    => 'sites_delete_path'
+    ])->where('id','[0-9]+');
+
 });
 
 
