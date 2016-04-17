@@ -88,6 +88,19 @@ Route::group(['middleware' => ['oauth'],'prefix'=>'api/1.0'], function () {
         'as'    => 'sites_delete_path'
     ])->where('id','[0-9]+');
 
+    /**
+     * Site Comments
+     */
+    Route::post('sitecomments', [
+        'uses'  => 'SiteCommentsController@create',
+        'as'    => 'site_comments_create_path'
+    ]);
+
+    Route::delete('sitecomments/{id}', [
+        'uses'  => 'SiteCommentsController@destroy',
+        'as'    => 'site_comments_delete_path'
+    ])->where('id','[0-9]+');
+
 });
 
 
@@ -161,9 +174,18 @@ Route::group(['prefix'=>'api/1.0'], function () {
         'as'    => 'sites_show_path'
     ])->where('id','[0-9]+');
 
+    /**
+     * SiteComments Routes
+     */
+    Route::get('sitecomments', [
+        'uses'  => 'SiteCommentsController@index',
+        'as'    => 'site_comments_index_path'
+    ]);
 
-
-
+    Route::get('sitecomments/{id}', [
+        'uses'  => 'SiteCommentsController@show',
+        'as'    => 'site_comments_show_path'
+    ])->where('id','[0-9]+');
 
     /**
      * Upload route example

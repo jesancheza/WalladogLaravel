@@ -7,10 +7,12 @@ use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvid
 use Walladog\Pet;
 use Walladog\Policies\PetsPolicy;
 use Walladog\Policies\PublicationsPolicy;
+use Walladog\Policies\SiteCommentsPolicy;
 use Walladog\Policies\SitesPolicy;
 use Walladog\Policies\UserPolicy;
 use Walladog\Publication;
 use Walladog\Site;
+use Walladog\SiteComment;
 use Walladog\User;
 
 class AuthServiceProvider extends ServiceProvider
@@ -26,6 +28,7 @@ class AuthServiceProvider extends ServiceProvider
         Pet::class => PetsPolicy::class,
         Site::class => SitesPolicy::class,
         Publication::class => PublicationsPolicy::class,
+        SiteComment::class => SiteCommentsPolicy::class,
     ];
 
     /**
