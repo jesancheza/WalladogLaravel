@@ -3,7 +3,6 @@
 namespace Walladog\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
-
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Response;
@@ -11,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 use LucaDegasperi\OAuth2Server\Facades\Authorizer;
 use Walladog\Http\Controllers\Controller;
 use Walladog\Http\Requests;
+use Walladog\Site;
 use Walladog\SiteComment;
 
 class SiteCommentsController extends Controller
@@ -58,7 +58,7 @@ class SiteCommentsController extends Controller
         $comment->site_id = $request->get('site_id');
         $comment->title = $request->get('title');
         $comment->comment = $request->get('comment');
-        //$comment->user_id = Auth::id();
+        $comment->user_id = Auth::id();
         $comment->deleted = 0;
 
         $comment->save();

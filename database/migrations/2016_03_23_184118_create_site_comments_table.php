@@ -16,6 +16,7 @@ class CreateSiteCommentsTable extends Migration
         Schema::create('site_comments', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('site_id')->unsigned();
+            $table->integer('user_id')->unsigned();
             $table->string('title',100)->default('Desconocido');
             $table->string('comment',255)->default('Desconocido');
             $table->boolean('deleted')->default(0);
