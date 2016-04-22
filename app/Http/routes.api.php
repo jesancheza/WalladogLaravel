@@ -220,6 +220,30 @@ Route::group(['prefix'=>'api/1.0'], function () {
     ]);
 
     /**
+     * PublicationCategory Routes
+     */
+    Route::get('publicationcategories', [
+        'uses'  => 'PublicationCategoriesController@index',
+        'as'    => 'publication_categories_index_path'
+    ]);
+
+    /**
+     * PublicationTypes Routes
+     */
+    Route::get('publicationtypes', [
+        'uses'  => 'PublicationTypesController@index',
+        'as'    => 'publication_types_index_path'
+    ]);
+
+    /**
+     * PublicationStatuses Routes
+     */
+    Route::get('publicationstatuses', [
+        'uses'  => 'PublicationStatusesController@index',
+        'as'    => 'publication_types_index_path'
+    ]);
+    
+    /**
      * Upload route example
      */
     Route::post('upload', [
