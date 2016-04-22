@@ -188,6 +188,22 @@ Route::group(['prefix'=>'api/1.0'], function () {
     ])->where('id','[0-9]+');
 
     /**
+     * PetRaces Routes
+     */
+    Route::get('petraces/{id}', [
+        'uses'  => 'PetRacesController@index',
+        'as'    => 'pet_races_index_path'
+    ])->where('id','[0-9]+');
+
+    /**
+     * PetTypes Routes
+     */
+    Route::get('pettypes', [
+        'uses'  => 'PetTypesController@index',
+        'as'    => 'pet_types_index_path'
+    ]);
+
+    /**
      * Upload route example
      */
     Route::post('upload', [
