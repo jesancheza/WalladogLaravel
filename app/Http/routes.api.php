@@ -204,6 +204,22 @@ Route::group(['prefix'=>'api/1.0'], function () {
     ]);
 
     /**
+     * SiteCategory Routes
+     */
+    Route::get('sitecategory', [
+        'uses'  => 'SiteCategoryController@index',
+        'as'    => 'site_category_index_path'
+    ]);
+
+    /**
+     * SiteTypes Routes
+     */
+    Route::get('sitetypes', [
+        'uses'  => 'SiteTypesController@index',
+        'as'    => 'site_types_index_path'
+    ]);
+
+    /**
      * Upload route example
      */
     Route::post('upload', [
