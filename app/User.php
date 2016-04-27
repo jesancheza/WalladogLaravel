@@ -20,6 +20,7 @@ class User extends Authenticatable
      *
      * @var array
      */
+    
     protected $hidden = [
         'delivery_address_id',
         'invoice_address_id',
