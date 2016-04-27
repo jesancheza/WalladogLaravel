@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 use LucaDegasperi\OAuth2Server\Facades\Authorizer;
 use Walladog\Http\Controllers\Controller;
 use Walladog\Http\Requests;
+use Walladog\Location;
 use Walladog\Pet;
 use Walladog\User;
 
@@ -33,9 +34,10 @@ class PetsController extends Controller
      */
     public function create(Request $request)
     {
+
         Auth::loginUsingId(Authorizer::getResourceOwnerId());
 
-        $validator = Validator::make($request->only(['pet_name','id_pet_race','id_pet_type'/*,'user_id','partner_id'*/,'pet_cross_description','pet_description','birthdate','sterile','hidden_location','hidden_location_city','is_partner']), [
+        $validator = Validator::make($request->only(['pet_name','id_pet_race','id_pet_type'/*,'user_id','partner_id'*/,'pet_cross_description','pet_description','birthdate','sterile','hidden_location','hidden_location_city','is_partner','location']), [
             'pet_name' => 'string|max:100|required',
             'id_pet_race' =>  'exists:pet_races,id|required',
             'id_pet_type' => 'exists:pet_types,id|required',
@@ -47,7 +49,9 @@ class PetsController extends Controller
             'birthdate' => 'date_format:Y/m/d',
             'hidden_location' => 'boolean',
             'hidden_location_city' => 'string',
-            'is_partner' => 'boolean'
+            'is_partner' => 'boolean',
+            'location.latitude' => 'string|required',
+            'location.longitude' => 'string|required'
 
         ]);
         if ($validator->fails()) {
@@ -56,6 +60,8 @@ class PetsController extends Controller
                 'errors'        => $validator->errors()
             ]);
         }
+
+        $location1 = Location::create(array('latitude'=>$request->get('location')['latitude'],'longitude'=>$request->get('location')['longitude']));
 
         $pet = new Pet();
 
@@ -79,7 +85,12 @@ class PetsController extends Controller
         $pet->visits = 0;
         $pet->deleted = 0;
 
+
         $pet->save();
+
+        $location1->pet()->associate($pet);
+        $location1->save();
+
 
         return response()->json($pet);
     }

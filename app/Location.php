@@ -13,7 +13,7 @@ class Location extends Model
      * @var array
      */
     protected $fillable = [
-
+            'latitude','longitude'
     ];
 
     /**
@@ -34,7 +34,7 @@ class Location extends Model
     }
 
     public function pet(){
-        return $this->belongsTo(Pet::class);
+        return $this->belongsTo(Pet::class,'pet_id');
     }
 
     public function partner(){

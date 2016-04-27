@@ -242,6 +242,15 @@ Route::group(['prefix'=>'api/1.0'], function () {
         'uses'  => 'PublicationStatusesController@index',
         'as'    => 'publication_types_index_path'
     ]);
+
+    /**
+     * Locations
+     */
+
+    Route::get('locations', [
+        'uses'  => 'LocationsController@index',
+        'as'    => 'locations_index_path'
+    ]);
     
     /**
      * Upload route example

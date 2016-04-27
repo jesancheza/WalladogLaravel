@@ -35,7 +35,8 @@ class User extends Authenticatable
         'oauth2_token',
         'google_token',
         'deleted',
-        'updated_at'
+        'updated_at',
+        'api_token'
     ];
 
     public function detail(){

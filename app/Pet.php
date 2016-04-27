@@ -26,7 +26,7 @@ class Pet extends Model
     ];
 
     public function location(){
-        return $this->hasOne(Location::class);
+        return $this->hasOne(Location::class,'pet_id');
     }
 
     public function images(){
