@@ -34,15 +34,23 @@ class PetsController extends Controller
      */
     public function create(Request $request)
     {
+        //
+    }
 
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
         Auth::loginUsingId(Authorizer::getResourceOwnerId());
 
-        $validator = Validator::make($request->only(['pet_name','id_pet_race','id_pet_type'/*,'user_id','partner_id'*/,'pet_cross_description','pet_description','birthdate','sterile','hidden_location','hidden_location_city','is_partner','location']), [
+        $validator = Validator::make($request->only(['pet_name','id_pet_race','id_pet_type','pet_cross_description','pet_description','birthdate','sterile','hidden_location','hidden_location_city','is_partner','location']), [
             'pet_name' => 'string|max:100|required',
             'id_pet_race' =>  'exists:pet_races,id|required',
             'id_pet_type' => 'exists:pet_types,id|required',
-            /*'user_id' => 'exists:users,id',
-            'partner_id' => 'exists:partners,id',*/
             'pet_cross_description' => 'string|max:255',
             'pet_description' => 'string|max:255',
             'sterile' => 'boolean',
@@ -60,8 +68,6 @@ class PetsController extends Controller
                 'errors'        => $validator->errors()
             ]);
         }
-
-        $location1 = Location::create(array('latitude'=>$request->get('location')['latitude'],'longitude'=>$request->get('location')['longitude']));
 
         $pet = new Pet();
 
@@ -88,22 +94,13 @@ class PetsController extends Controller
 
         $pet->save();
 
+        $location1 = Location::create(array('latitude'=>$request->get('location')['latitude'],'longitude'=>$request->get('location')['longitude']));
+
         $location1->pet()->associate($pet);
         $location1->save();
 
 
         return response()->json($pet);
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
     }
 
     /**

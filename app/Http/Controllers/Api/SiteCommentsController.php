@@ -32,6 +32,17 @@ class SiteCommentsController extends Controller
      */
     public function create(Request $request)
     {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
         Auth::loginUsingId(Authorizer::getResourceOwnerId());
 
         $validator = Validator::make($request->only(['site_id','title','comment']), [
@@ -64,17 +75,6 @@ class SiteCommentsController extends Controller
         $comment->save();
 
         return response()->json($comment);
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
     }
 
     /**

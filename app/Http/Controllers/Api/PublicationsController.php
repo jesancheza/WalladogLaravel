@@ -12,7 +12,9 @@ use Illuminate\Support\Facades\Validator;
 use LucaDegasperi\OAuth2Server\Facades\Authorizer;
 use Walladog\Http\Controllers\Controller;
 use Walladog\Http\Requests;
+use Walladog\Location;
 use Walladog\Publication;
+use Walladog\Site;
 
 class PublicationsController extends Controller
 {
@@ -33,9 +35,20 @@ class PublicationsController extends Controller
      */
     public function create(Request $request)
     {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
         Auth::loginUsingId(Authorizer::getResourceOwnerId());
 
-        $validator = Validator::make($request->only(['publication_type_id','publication_category_id','short_title','title','short_text','text','date_publish']), [
+        $validator = Validator::make($request->only(['publication_type_id','publication_category_id','short_title','title','short_text','text','date_publish','location']), [
             'publication_type_id' => 'exists:publication_types,id|required',
             'publication_category_id' =>  'exists:publication_categories,id|required',
             'short_title' => 'string|max:255',
@@ -52,6 +65,7 @@ class PublicationsController extends Controller
             ]);
         }
 
+        // Publication
         $publication = new Publication();
 
         $publication->publication_type_id = $request->get('publication_type_id');
@@ -65,21 +79,14 @@ class PublicationsController extends Controller
         $publication->publication_status_id = 1;
         $publication->deleted = 0;
 
+        //dd($request->get('location')['latitude']);
+
+        $location = Location::create(array('longitude'=>$request->get('location')['longitude'],'latitude'=>$request->get('location')['latitude']));
 
         $publication->save();
+        $location->publication()->associate($publication);
 
         return response()->json($publication);
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
     }
 
     /**

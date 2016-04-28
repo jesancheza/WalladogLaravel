@@ -40,7 +40,7 @@ class Publication extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function site(){
-        return $this->belongsTo(Site::class,'site_id');
+    public function location(){
+        return $this->hasOne(Location::class,'publication_id');
     }
 }

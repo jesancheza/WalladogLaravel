@@ -58,16 +58,16 @@ Route::group(['middleware' => ['oauth'],'prefix'=>'api/1.0'], function () {
     ])->where('id','[0-9]+');
 
     Route::post('pets', [
-        'uses'  => 'PetsController@create',
-        'as'    => 'pets_create_path'
+        'uses'  => 'PetsController@store',
+        'as'    => 'pets_store_path'
     ]);
 
     /**
      * Publications
      */
     Route::post('publications', [
-        'uses'  => 'PublicationsController@create',
-        'as'    => 'publications_create_path'
+        'uses'  => 'PublicationsController@store',
+        'as'    => 'publications_store_path'
     ]);
 
     Route::delete('publications/{id}', [
@@ -79,8 +79,8 @@ Route::group(['middleware' => ['oauth'],'prefix'=>'api/1.0'], function () {
      * Sites
      */
     Route::post('sites', [
-        'uses'  => 'SitesController@create',
-        'as'    => 'sites_create_path'
+        'uses'  => 'SitesController@store',
+        'as'    => 'sites_store_path'
     ]);
 
     Route::delete('sites/{id}', [
@@ -92,8 +92,8 @@ Route::group(['middleware' => ['oauth'],'prefix'=>'api/1.0'], function () {
      * Site Comments
      */
     Route::post('sitecomments', [
-        'uses'  => 'SiteCommentsController@create',
-        'as'    => 'site_comments_create_path'
+        'uses'  => 'SiteCommentsController@store',
+        'as'    => 'site_comments_store_path'
     ]);
 
     Route::delete('sitecomments/{id}', [

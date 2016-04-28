@@ -19,7 +19,6 @@ class CreatePublicationsTable extends Migration
             $table->integer('publication_category_id')->unsigned();
             $table->integer('publication_status_id')->unsigned();
             $table->integer('location_id')->unsigned();
-            $table->integer('site_id')->unsigned();
             $table->integer('user_id')->unsigned();
 
             $table->string('short_title',255)->default('Desconocido');

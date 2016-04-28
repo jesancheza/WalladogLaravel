@@ -32,6 +32,17 @@ class SitesController extends Controller
      */
     public function create(Request $request)
     {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
         Auth::loginUsingId(Authorizer::getResourceOwnerId());
 
         $validator = Validator::make($request->only(['site_category_id','site_type_id','pet_type_id','name','description']), [
@@ -62,17 +73,6 @@ class SitesController extends Controller
         $site->save();
 
         return response()->json($site);
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
     }
 
     /**
