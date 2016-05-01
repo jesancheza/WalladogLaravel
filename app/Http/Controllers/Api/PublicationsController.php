@@ -55,8 +55,9 @@ class PublicationsController extends Controller
             'title' => 'string|max:255|required',
             'short_text' => 'string|max:255',
             'text' => 'string',
-            'date_publish' => 'date_format:Y/m/d'
-
+            'date_publish' => 'date_format:Y/m/d',
+            'location.latitude' => 'string|required_with:location',
+            'location.longitude' => 'string|required_with:location'
         ]);
         if ($validator->fails()) {
             return Response::make([
@@ -79,12 +80,14 @@ class PublicationsController extends Controller
         $publication->publication_status_id = 1;
         $publication->deleted = 0;
 
-        //dd($request->get('location')['latitude']);
-
-        $location = Location::create(array('longitude'=>$request->get('location')['longitude'],'latitude'=>$request->get('location')['latitude']));
-
         $publication->save();
-        $location->publication()->associate($publication);
+
+        if ($request->get('location')){
+            $location1 = Location::create(array('latitude'=>$request->get('location')['latitude'],'longitude'=>$request->get('location')['longitude']));
+
+            $location1->publication()->associate($publication);
+            $location1->save();
+        }
 
         return response()->json($publication);
     }
