@@ -8,4 +8,4 @@ Homestead.json
 storage/uploads
 composer.lock
 composer_local.lock
-npm-debug-log
+npm-debug.log
