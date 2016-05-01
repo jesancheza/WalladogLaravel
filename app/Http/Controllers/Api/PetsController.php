@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 use LucaDegasperi\OAuth2Server\Facades\Authorizer;
 use Walladog\Http\Controllers\Controller;
 use Walladog\Http\Requests;
+use Walladog\Image;
 use Walladog\Location;
 use Walladog\Pet;
 use Walladog\User;
@@ -47,7 +48,7 @@ class PetsController extends Controller
     {
         Auth::loginUsingId(Authorizer::getResourceOwnerId());
 
-        $validator = Validator::make($request->only(['pet_name','id_pet_race','id_pet_type','pet_cross_description','pet_description','birthdate','sterile','hidden_location','hidden_location_city','is_partner','location']), [
+        $validator = Validator::make($request->only(['pet_name','id_pet_race','id_pet_type','pet_cross_description','pet_description','birthdate','sterile','hidden_location','hidden_location_city','is_partner','location','image']), [
             'pet_name' => 'string|max:100|required',
             'id_pet_race' =>  'exists:pet_races,id|required',
             'id_pet_type' => 'exists:pet_types,id|required',
@@ -58,8 +59,11 @@ class PetsController extends Controller
             'hidden_location' => 'boolean',
             'hidden_location_city' => 'string',
             'is_partner' => 'boolean',
-            'location.latitude' => 'string|required',
-            'location.longitude' => 'string|required'
+            'location.latitude' => 'string|required_with:location',
+            'location.longitude' => 'string|required_with:location',
+            'image.name' => 'string|required_with:image',
+            'image.url_short' => 'url|required_with:image',
+            'image.url_big' => 'url|required_with:image'
 
         ]);
         if ($validator->fails()) {
@@ -94,10 +98,19 @@ class PetsController extends Controller
 
         $pet->save();
 
-        $location1 = Location::create(array('latitude'=>$request->get('location')['latitude'],'longitude'=>$request->get('location')['longitude']));
+        if ($request->get('location')){
+            $location1 = Location::create(array('latitude'=>$request->get('location')['latitude'],'longitude'=>$request->get('location')['longitude']));
 
-        $location1->pet()->associate($pet);
-        $location1->save();
+            $location1->pet()->associate($pet);
+            $location1->save();
+        }
+
+        if ($request->get('image')){
+            $image = Image::create(array('name'=>$request->get('image')['name'],'url_short'=>$request->get('image')['url_short'],'url_big'=>$request->get('image')['url_big']));
+
+            $image->pet()->associate($pet);
+            $image->save();
+        }
 
 
         return response()->json($pet);
