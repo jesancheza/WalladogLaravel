@@ -23,6 +23,7 @@ class CreateLocationsTable extends Migration
             $table->string('country',255)->default('ES');
             $table->double('latitude')->nullable();
             $table->double('longitude')->nullable();
+            $table->boolean('deleted')->default(0);
             $table->timestamps();
 
         });

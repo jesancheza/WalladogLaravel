@@ -83,6 +83,11 @@ Route::group(['middleware' => ['oauth'],'prefix'=>'api/1.0'], function () {
         'as'    => 'sites_store_path'
     ]);
 
+    Route::post('sites/{id}', [
+        'uses'  => 'SitesController@update',
+        'as'    => 'sites_update_path'
+    ])->where('id','[0-9]+');
+
     Route::delete('sites/{id}', [
         'uses'  => 'SitesController@destroy',
         'as'    => 'sites_delete_path'
@@ -95,6 +100,11 @@ Route::group(['middleware' => ['oauth'],'prefix'=>'api/1.0'], function () {
         'uses'  => 'SiteCommentsController@store',
         'as'    => 'site_comments_store_path'
     ]);
+
+    Route::post('sitecomments/{id}', [
+        'uses'  => 'SiteCommentsController@update',
+        'as'    => 'site_comments_update_path'
+    ])->where('id','[0-9]+');
 
     Route::delete('sitecomments/{id}', [
         'uses'  => 'SiteCommentsController@destroy',

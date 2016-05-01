@@ -34,6 +34,13 @@ class SiteCommentsPolicy
         //
     }
 
+    public function update(User $user, SiteComment $comment)
+    {
+        if ($user->id == $comment->user_id) {
+            return true;
+        }
+    }
+
     public function destroy(User $user, SiteComment $comment)
     {
         if ($user->id == $comment->user_id) {

@@ -40,5 +40,8 @@ class Site extends Model
         return $this->hasMany(SiteComment::class);
     }
 
+    public function location(){
+        return $this->hasOne(Location::class,'site_id');
+    }
     
 }

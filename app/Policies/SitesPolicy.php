@@ -34,6 +34,13 @@ class SitesPolicy
         //
     }
 
+    public function update(User $user, Site $site)
+    {
+        if ($user->id == $site->user_id && $site->deleted == 0) {
+            return true;
+        }
+    }
+
     public function destroy(User $user, Site $site)
     {
         if ($user->id == $site->user_id) {

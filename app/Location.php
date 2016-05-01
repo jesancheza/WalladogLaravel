@@ -45,6 +45,9 @@ class Location extends Model
         return $this->belongsTo(Publication::class,'publication_id');
     }
 
+    public function site(){
+        return $this->belongsTo(Site::class,'site_id');
+    }
     
 
 

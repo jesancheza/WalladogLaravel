@@ -114,7 +114,35 @@ class SiteCommentsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        Auth::loginUsingId(Authorizer::getResourceOwnerId());
+
+        $validator = Validator::make($request->only(['title','comment']), [
+            'title' =>  'string|max:100|required',
+            'comment' => 'string|max:255|required'
+        ]);
+        if ($validator->fails()) {
+            return Response::make([
+                'message'   => 'Validation Failed',
+                'errors'        => $validator->errors()
+            ]);
+        }
+
+        $comment = SiteComment::with('site')->findOrFail($id);
+
+        if($comment->deleted == 1){
+            return response()->json([ 'error' => 'Site comment don\'t exit'], 401);
+        }
+
+        if(Gate::denies('update',$comment)) {
+            return response()->json([ 'error' => 'Usuario no autorizado' ], 401);
+        }
+        
+        $comment->title = $request->get('title');
+        $comment->comment = $request->get('comment');
+
+        $comment->update();
+
+        return response()->json($comment);
     }
 
     /**
