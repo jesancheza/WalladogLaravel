@@ -6,3 +6,6 @@ Homestead.json
 .env
 .idea/*
 storage/uploads
+composer.lock
+composer_local.lock
+npm-debug-log
