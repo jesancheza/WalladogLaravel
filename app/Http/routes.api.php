@@ -57,6 +57,11 @@ Route::group(['middleware' => ['oauth'],'prefix'=>'api/1.0'], function () {
         'as'    => 'pets_delete_path'
     ])->where('id','[0-9]+');
 
+    Route::post('pets/{id}', [
+        'uses'  => 'PetsController@update',
+        'as'    => 'pets_update_path'
+    ])->where('id','[0-9]+');
+
     Route::post('pets', [
         'uses'  => 'PetsController@store',
         'as'    => 'pets_store_path'
