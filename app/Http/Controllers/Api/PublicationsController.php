@@ -129,7 +129,53 @@ class PublicationsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        Auth::loginUsingId(Authorizer::getResourceOwnerId());
+
+        $validator = Validator::make($request->only(['publication_type_id','publication_category_id','short_title','title','short_text','text','location']), [
+            'publication_type_id' => 'exists:publication_types,id|required',
+            'publication_category_id' =>  'exists:publication_categories,id|required',
+            'short_title' => 'string|max:255',
+            'title' => 'string|max:255|required',
+            'short_text' => 'string|max:255',
+            'text' => 'string',
+            'location.latitude' => 'string|required_with:location',
+            'location.longitude' => 'string|required_with:location'
+        ]);
+        if ($validator->fails()) {
+            return Response::make([
+                'message'   => 'Validation Failed',
+                'errors'        => $validator->errors()
+            ]);
+        }
+
+        $publication = Publication::with('location')->findOrfail($id);
+
+        if(Gate::denies('update',$publication)) {
+            if ($publication->deleted == 1){
+                return response()->json([ 'error' => 'Publication don\'t exit'], 401);
+            }else{
+                return response()->json([ 'error' => 'Usuario no autorizado' ], 401);
+            }
+        }
+
+        $publication->publication_type_id = $request->get('publication_type_id');
+        $publication->publication_category_id = $request->get('publication_category_id');
+        $publication->short_title = $request->get('short_title');
+        $publication->title = $request->get('title');
+        $publication->short_text = $request->get('short_text');
+        $publication->text = $request->get('text');
+
+        if ($request->get('location')){
+            $publication->location->latitude = $request->get('location')['latitude'];
+            $publication->location->longitude = $request->get('location')['longitude'];
+            $publication->location->deleted = 0;
+        }elseif ($publication->location->id !== null){
+            $publication->location->deleted = 1;
+        }
+
+        $publication->push();
+
+        return response()->json($publication);
     }
 
     /**

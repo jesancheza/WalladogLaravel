@@ -70,6 +70,11 @@ Route::group(['middleware' => ['oauth'],'prefix'=>'api/1.0'], function () {
         'as'    => 'publications_store_path'
     ]);
 
+    Route::post('publications/{id}', [
+        'uses'  => 'PublicationsController@update',
+        'as'    => 'publications_update_path'
+    ])->where('id','[0-9]+');
+
     Route::delete('publications/{id}', [
         'uses'  => 'PublicationsController@destroy',
         'as'    => 'publications_delete_path'

@@ -142,7 +142,7 @@ class SitesController extends Controller
         $site = Site::with('location')->findOrfail($id);
 
         if(Gate::denies('update',$site)) {
-            if ($site->delete == 1){
+            if ($site->deleted == 1){
                 return response()->json([ 'error' => 'Site don\'t exit'], 401);
             }else{
                 return response()->json([ 'error' => 'Usuario no autorizado' ], 401);
@@ -158,6 +158,7 @@ class SitesController extends Controller
         if ($request->get('location')){
             $site->location->latitude = $request->get('location')['latitude'];
             $site->location->longitude = $request->get('location')['longitude'];
+            $site->location->deleted = 0;
         }elseif ($site->location->id !== null){
             $site->location->deleted = 1;
         }

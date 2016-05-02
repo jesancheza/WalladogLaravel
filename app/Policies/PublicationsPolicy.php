@@ -34,6 +34,13 @@ class PublicationsPolicy
         //
     }
 
+    public function update(User $user, Publication $publication)
+    {
+        if ($user->id == $publication->user_id && $publication->deleted == 0) {
+            return true;
+        }
+    }
+
     public function destroy(User $user, Publication $publication)
     {
         if ($user->id == $publication->user_id) {
