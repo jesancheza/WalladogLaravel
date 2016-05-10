@@ -18,7 +18,7 @@ class LocationsController extends Controller
      */
     public function index()
     {
-        return response()->json(Location::with('pet')->paginate(15));
+        return response()->json(Location::with('user','partner','pet','publication','site')->where('deleted', 0)->paginate(15));
     }
 
     /**
@@ -50,7 +50,13 @@ class LocationsController extends Controller
      */
     public function show($id)
     {
-        
+        $location = Location::with('user','partner','pet','publication','site')->findOrFail($id);
+
+        if($location->deleted == 1){
+            return response()->json([ 'error' => 'Location don\'t exit'], 401);
+        }
+
+        return response()->json($location); //Get the resource
     }
 
     /**
