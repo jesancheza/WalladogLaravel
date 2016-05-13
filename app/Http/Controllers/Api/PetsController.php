@@ -203,9 +203,6 @@ class PetsController extends Controller
         if ($request->get('location')){
             $pet->location->latitude = $request->get('location')['latitude'];
             $pet->location->longitude = $request->get('location')['longitude'];
-            $pet->location->deleted = 0;
-        }elseif ($pet->location->id !== null){
-            $pet->location->deleted = 1;
         }
 
         $pet->push();

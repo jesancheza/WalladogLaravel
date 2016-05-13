@@ -158,9 +158,6 @@ class SitesController extends Controller
         if ($request->get('location')){
             $site->location->latitude = $request->get('location')['latitude'];
             $site->location->longitude = $request->get('location')['longitude'];
-            $site->location->deleted = 0;
-        }elseif ($site->location->id !== null){
-            $site->location->deleted = 1;
         }
 
         $site->push();

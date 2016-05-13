@@ -18,7 +18,7 @@ class LocationsController extends Controller
      */
     public function index()
     {
-        return response()->json(Location::with('user','partner','pet','publication','site')->where('deleted', 0)->paginate(15));
+        return response()->json(Location::with('user','partner','pet','publication','site')->paginate(15));
     }
 
     /**

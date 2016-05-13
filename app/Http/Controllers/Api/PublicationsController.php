@@ -168,9 +168,6 @@ class PublicationsController extends Controller
         if ($request->get('location')){
             $publication->location->latitude = $request->get('location')['latitude'];
             $publication->location->longitude = $request->get('location')['longitude'];
-            $publication->location->deleted = 0;
-        }elseif ($publication->location->id !== null){
-            $publication->location->deleted = 1;
         }
 
         $publication->push();
