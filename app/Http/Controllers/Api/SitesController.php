@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
 use LucaDegasperi\OAuth2Server\Facades\Authorizer;
+use Walladog\Address;
 use Walladog\Http\Controllers\Controller;
 use Walladog\Http\Requests;
 use Walladog\Location;
@@ -23,7 +24,7 @@ class SitesController extends Controller
      */
     public function index()
     {
-        return response()->json(Site::with('user','category','type','comments')->where('deleted', 0)->paginate(15));
+        return response()->json(Site::with('user','category','type','comments','address')->where('deleted', 0)->paginate(15));
     }
 
     /**
@@ -46,14 +47,19 @@ class SitesController extends Controller
     {
         Auth::loginUsingId(Authorizer::getResourceOwnerId());
 
-        $validator = Validator::make($request->only(['site_category_id','site_type_id','pet_type_id','name','description','location']), [
+        $validator = Validator::make($request->only(['site_category_id','site_type_id','pet_type_id','name','description','location','address']), [
             'site_category_id' => 'exists:site_categories,id|required',
             'site_type_id' =>  'exists:site_types,id|required',
             'pet_type_id' => 'exists:pet_types,id|required',
             'name' => 'string|max:255|required',
             'description' => 'string',
             'location.latitude' => 'string|required_with:location',
-            'location.longitude' => 'string|required_with:location'
+            'location.longitude' => 'string|required_with:location',
+            'address.address1' => 'string|required_with:addreess|max:255',
+            'address.address2' => 'string|required_with:addreess|max:255',
+            'address.province_txt' => 'string|required_with:addreess|max:255',
+            'address.city_txt' => 'string|required_with:addreess|max:255',
+            'address.cp_txt' => 'string|required_with:addreess|max:5'
         ]);
         if ($validator->fails()) {
             return Response::make([
@@ -79,6 +85,19 @@ class SitesController extends Controller
 
             $location1->site()->associate($site);
             $location1->save();
+        }
+
+        if ($request->get('address')){
+            $address = Address::create(array(
+                'address1'=>$request->get('address')['address1'],
+                'address2'=>$request->get('address')['address2'],
+                'province_txt'=>$request->get('address')['province_txt'],
+                'city_txt'=>$request->get('address')['city_txt'],
+                'cp_txt'=>$request->get('address')['cp_txt']
+                ));
+
+            $address->site()->associate($site);
+            $address->save();
         }
 
         return response()->json($site);
@@ -123,14 +142,19 @@ class SitesController extends Controller
     {
         Auth::loginUsingId(Authorizer::getResourceOwnerId());
 
-        $validator = Validator::make($request->only(['site_category_id','site_type_id','pet_type_id','name','description','location']), [
+        $validator = Validator::make($request->only(['site_category_id','site_type_id','pet_type_id','name','description','location','address']), [
             'site_category_id' => 'exists:site_categories,id|required',
             'site_type_id' =>  'exists:site_types,id|required',
             'pet_type_id' => 'exists:pet_types,id|required',
             'name' => 'string|max:255|required',
             'description' => 'string',
             'location.latitude' => 'string|required_with:location',
-            'location.longitude' => 'string|required_with:location'
+            'location.longitude' => 'string|required_with:location',
+            'address.address1' => 'string|required_with:addreess|max:255',
+            'address.address2' => 'string|required_with:addreess|max:255',
+            'address.province_txt' => 'string|required_with:addreess|max:255',
+            'address.city_txt' => 'string|required_with:addreess|max:255',
+            'address.cp_txt' => 'string|required_with:addreess|max:5'
         ]);
         if ($validator->fails()) {
             return Response::make([
@@ -158,6 +182,16 @@ class SitesController extends Controller
         if ($request->get('location')){
             $site->location->latitude = $request->get('location')['latitude'];
             $site->location->longitude = $request->get('location')['longitude'];
+        }
+
+        if ($request->get('address')){
+
+            $site->address->address1 = $request->get('address')['address1'];
+            $site->address->address2 = $request->get('address')['address2'];
+            $site->address->province_txt = $request->get('address')['province_txt'];
+            $site->address->city_txt = $request->get('address')['city_txt'];
+            $site->address->cp_txt = $request->get('address')['cp_txt'];
+
         }
 
         $site->push();

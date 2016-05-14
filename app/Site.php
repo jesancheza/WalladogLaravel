@@ -43,5 +43,8 @@ class Site extends Model
     public function location(){
         return $this->hasOne(Location::class,'site_id');
     }
-    
+
+    public function address(){
+        return $this->hasOne(Address::class,'site_id');
+    }
 }

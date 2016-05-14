@@ -17,6 +17,7 @@ class CreateAddressesTable extends Migration
             $table->increments('id');
             $table->integer('user_id')->unsigned()->nullable();
             $table->integer('partner_id')->unsigned()->nullable();
+            $table->integer('site_id')->unsigned()->nullable();
             $table->string('address1',255);
             $table->string('address2',255);
             $table->string('province_txt',255);

@@ -12,7 +12,7 @@ class Address extends Model
      * @var array
      */
     protected $fillable = [
-        'name'
+        'user_id', 'partner_id', 'site_id', 'address1', 'address2', 'province_txt', 'city_txt', 'cp_txt'
     ];
 
     /**
@@ -26,10 +26,14 @@ class Address extends Model
 
 
     public function user(){
-        $this->belongsTo(User::class);
+        return $this->belongsTo(User::class);
     }
     
     public function partner(){
-        $this->belongsTo(Partner::class);
+        return $this->belongsTo(Partner::class);
+    }
+
+    public function site(){
+        return $this->belongsTo(Site::class,'site_id');
     }
 }
