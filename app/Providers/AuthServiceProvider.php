@@ -4,7 +4,9 @@ namespace Walladog\Providers;
 
 use Illuminate\Contracts\Auth\Access\Gate as GateContract;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Walladog\Address;
 use Walladog\Pet;
+use Walladog\Policies\AddressesPolicy;
 use Walladog\Policies\PetsPolicy;
 use Walladog\Policies\PublicationsPolicy;
 use Walladog\Policies\SiteCommentsPolicy;
@@ -29,6 +31,7 @@ class AuthServiceProvider extends ServiceProvider
         Site::class => SitesPolicy::class,
         Publication::class => PublicationsPolicy::class,
         SiteComment::class => SiteCommentsPolicy::class,
+        Address::class => AddressesPolicy::class,
     ];
 
     /**

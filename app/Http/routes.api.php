@@ -121,6 +121,13 @@ Route::group(['middleware' => ['oauth'],'prefix'=>'api/1.0'], function () {
         'as'    => 'site_comments_delete_path'
     ])->where('id','[0-9]+');
 
+    /**
+     * Address
+     */
+    Route::delete('address/{id}', [
+        'uses'  => 'AddressesController@destroy',
+        'as'    => 'addresses_delete_path'
+    ])->where('id','[0-9]+');
 });
 
 
@@ -271,6 +278,20 @@ Route::group(['prefix'=>'api/1.0'], function () {
         'uses'  => 'LocationsController@index',
         'as'    => 'locations_index_path'
     ]);
+
+    /**
+     * Address
+     */
+
+    Route::get('address', [
+        'uses'  => 'AddressesController@index',
+        'as'    => 'address_index_path'
+    ]);
+
+    Route::get('address/{id}', [
+        'uses'  => 'AddressesController@show',
+        'as'    => 'address_show_path'
+    ])->where('id','[0-9]+');
     
     /**
      * Upload route example
