@@ -124,6 +124,16 @@ Route::group(['middleware' => ['oauth'],'prefix'=>'api/1.0'], function () {
     /**
      * Address
      */
+    Route::put('address/{id}', [
+        'uses'  => 'AddressesController@update',
+        'as'    => 'addresses_update_path'
+    ])->where('id','[0-9]+');
+
+    Route::post('address', [
+        'uses'  => 'AddressesController@store',
+        'as'    => 'addresses_store_path'
+    ]);
+
     Route::delete('address/{id}', [
         'uses'  => 'AddressesController@destroy',
         'as'    => 'addresses_delete_path'

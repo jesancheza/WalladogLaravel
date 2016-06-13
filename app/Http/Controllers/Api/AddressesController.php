@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Validator;
 use LucaDegasperi\OAuth2Server\Facades\Authorizer;
 use Walladog\Address;
 use Walladog\Http\Controllers\Controller;
@@ -42,7 +44,33 @@ class AddressesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Auth::loginUsingId(Authorizer::getResourceOwnerId());
+
+        $validator = Validator::make($request->only(['address1','address2','province_txt','city_txt','cp_txt']), [
+            'address1' => 'string|required|max:255',
+            'address2' => 'string|required|max:255',
+            'province_txt' => 'string|required|max:255',
+            'city_txt' => 'string|required|max:255',
+            'cp_txt' => 'string|required|max:5'
+        ]);
+        if ($validator->fails()) {
+            return Response::make([
+                'message'   => 'Validation Failed',
+                'errors'        => $validator->errors()
+            ]);
+        }
+
+        $address = new Address();
+
+        $address->address1 = $request->get('address1');
+        $address->address2 = $request->get('address2');
+        $address->province_txt = $request->get('province_txt');
+        $address->city_txt = $request->get('city_txt');
+        $address->cp_txt = $request->get('cp_txt');
+
+        $address->save();
+
+        return response()->json($address);
     }
 
     /**
@@ -82,7 +110,41 @@ class AddressesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        Auth::loginUsingId(Authorizer::getResourceOwnerId());
+
+        $validator = Validator::make($request->only(['address1','address2','province_txt','city_txt','cp_txt']), [
+            'address1' => 'string|required|max:255',
+            'address2' => 'string|required|max:255',
+            'province_txt' => 'string|required|max:255',
+            'city_txt' => 'string|required|max:255',
+            'cp_txt' => 'string|required|max:5'
+        ]);
+        if ($validator->fails()) {
+            return Response::make([
+                'message'   => 'Validation Failed',
+                'errors'        => $validator->errors()
+            ]);
+        }
+
+        $address = Address::with('site','user','partner')->findOrfail($id);
+
+        if(Gate::denies('update',$address)) {
+            if ($address->deleted == 1){
+                return response()->json([ 'error' => 'Address don\'t exit'], 401);
+            }else{
+                return response()->json([ 'error' => 'Usuario no autorizado' ], 401);
+            }
+        }
+
+        $address->address1 = $request->get('address1');
+        $address->address2 = $request->get('address2');
+        $address->province_txt = $request->get('province_txt');
+        $address->city_txt = $request->get('city_txt');
+        $address->cp_txt = $request->get('cp_txt');
+
+        $address->push();
+
+        return response()->json($address);
     }
 
     /**

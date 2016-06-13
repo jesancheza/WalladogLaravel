@@ -34,9 +34,19 @@ class AddressesPolicy
         //
     }
 
+    public function update(User $user, Address $address)
+    {
+        if (($user->id == $address->user_id
+                || (isset($address->site) && $user->id == $address->site->user_id)
+                || (isset($address->partner) && $user->id == $address->partner->user_id)) && $address->deleted == 0) {
+            return true;
+        }
+    }
+
     public function destroy(User $user, Address $address)
     {
-        if ($user->id == $address->user_id || $user->id == $address->site->user_id | $user->id == $address->partner_id->user_id) {
+        if ($user->id == $address->user_id || (isset($address->site) && $user->id == $address->site->user_id) |
+            $user->id == (isset($address->partner_id) && $address->partner_id->user_id)) {
             return true;
         }
     }
